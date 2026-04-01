@@ -1,0 +1,39 @@
+function doPost(e) {
+  try {
+    // 1. 解析前端传来的 JSON 数据
+    var data = JSON.parse(e.postData.contents);
+    var email = data.email;
+    var totalScore = data.totalScore;
+    var sectionScores = data.sectionScores;
+    var emailHtmlBody = data.emailHtmlBody;
+
+    // 2. 将成绩写入 Google Sheet
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    sheet.appendRow([
+      new Date(), 
+      email, 
+      totalScore, 
+      sectionScores["第一部分：缘起与因果（题 1–10）"] || "0/0",
+      sectionScores["第二部分：苦的本质（题 11–20）"] || "0/0",
+      sectionScores["第三部分：无常（题 21–28）"] || "0/0",
+      sectionScores["第四部分：无我（题 29–37）"] || "0/0",
+      sectionScores["第五部分：四圣谛综合（题 38–40）"] || "0/0"
+    ]);
+
+    // 3. 发送邮件给用户
+    var subject = "集与灭——生活场景测验 详细成绩与解析";
+    MailApp.sendEmail({
+      to: email,
+      subject: subject,
+      htmlBody: emailHtmlBody
+    });
+
+    // 返回成功状态给前端
+    return ContentService.createTextOutput(JSON.stringify({"status": "success"}))
+                         .setMimeType(ContentService.MimeType.JSON);
+                         
+  } catch(error) {
+    return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.toString()}))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
+}
