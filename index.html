@@ -806,6 +806,8 @@ function submitQuiz() {
   submitBtn.textContent = '正在提交并发送邮件...';
   submitBtn.disabled = true;
 
+ 
+
   const total = questions.length;
   let correct = 0;
   
@@ -814,19 +816,26 @@ function submitQuiz() {
   // 用于构建邮件的 HTML 内容
   let emailHtml = `<h2 style="color: #5c3d1e;">您的测验成绩</h2><hr>`;
 
+  // 新增：用于跟踪当前的环节名称
+  let currentSectionName = ""; 
+
   questions.forEach((q, i) => {
-    // 统计环节分数
-    if (!secStats[q.section]) {
-      secStats[q.section] = { correct: 0, total: 0 };
+    // 关键修正：如果当前题有 section 就更新，没有就沿用上一个
+    if (q.section) {
+      currentSectionName = q.section;
     }
-    secStats[q.section].total++;
+
+    if (!secStats[currentSectionName]) {
+      secStats[currentSectionName] = { correct: 0, total: 0 };
+    }
+    secStats[currentSectionName].total++;
 
     const userAns = answered[i];
-    const isCorrect = userAns === q.answer;
+    const isCorrect = (userAns === q.answer);
     
     if (isCorrect) {
       correct++;
-      secStats[q.section].correct++;
+      secStats[currentSectionName].correct++;
     }
 
     // 构建每一题的邮件解析内容
