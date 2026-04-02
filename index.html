@@ -802,6 +802,13 @@ function submitQuiz() {
     return;
   }
 
+  const unanswered = answered.reduce((acc, a, i) => a === null ? acc.concat(i + 1) : acc, []);
+  if (unanswered.length > 0) {
+    alert(`您还有 ${unanswered.length} 题未作答（第 ${unanswered.join('、') } 题），请完成所有题目后再提交。`);
+    document.getElementById('q' + (unanswered[0] - 1)).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
   const submitBtn = document.getElementById('submitBtn');
   submitBtn.textContent = '正在提交并发送邮件...';
   submitBtn.disabled = true;
