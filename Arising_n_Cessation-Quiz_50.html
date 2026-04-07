@@ -21,7 +21,10 @@
   header h1 { font-size: 1.6rem; letter-spacing: 0.1em; margin-bottom: 6px; }
   header p { font-size: 0.9rem; opacity: 0.8; }
 
-  .progress-bar-wrap { background: #d4c3a3; height: 6px; }
+  .progress-bar-wrap {
+    background: #d4c3a3;
+    height: 6px;
+  }
   .progress-bar {
     height: 6px;
     background: linear-gradient(90deg, #c0732a, #e8a055);
@@ -29,7 +32,11 @@
     transition: width 0.4s ease;
   }
 
-  .container { max-width: 720px; margin: 0 auto; padding: 30px 20px 60px; }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
 
   .section-title {
     background: #e8d9bf;
@@ -49,21 +56,36 @@
     margin-bottom: 18px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     border: 1.5px solid #e8d9bf;
+    transition: border-color 0.2s;
   }
+  .question-card.answered { border-color: rgba(192, 115, 42, 0.2); }
 
-  .q-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .q-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
   .q-number {
     background: #c0732a;
     color: white;
     border-radius: 50%;
     width: 28px; height: 28px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem; font-weight: bold;
+    font-size: 0.8rem;
+    font-weight: bold;
+    flex-shrink: 0;
   }
 
-  .q-text { font-size: 0.97rem; font-weight: 600; margin-bottom: 14px; color: #2c2416; }
+  .q-text {
+    font-size: 0.97rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #2c2416;
+  }
 
   .options { display: flex; flex-direction: column; gap: 8px; }
+
   .option-btn {
     background: #faf7f2;
     border: 1.5px solid #d4c3a3;
@@ -72,11 +94,30 @@
     text-align: left;
     cursor: pointer;
     font-size: 0.9rem;
+    color: #2c2416;
     transition: all 0.15s;
+    line-height: 1.6;
   }
-  .option-btn.correct { background: #e8f5e9; border-color: #4caf50; color: #1b5e20; }
-  .option-btn.wrong { background: #fdecea; border-color: #e57373; color: #b71c1c; }
-  .option-btn.reveal { background: #e8f5e9; border-color: #4caf50; opacity: 0.7; }
+  .option-btn:hover:not(:disabled) {
+    background: #f0e8d8;
+    border-color: #c0732a;
+  }
+  .option-btn.correct {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #1b5e20;
+  }
+  .option-btn.wrong {
+    background: #fdecea;
+    border-color: #e57373;
+    color: #b71c1c;
+  }
+  .option-btn.reveal {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #1b5e20;
+    opacity: 0.7;
+  }
 
   .explanation {
     display: none;
@@ -85,121 +126,454 @@
     border-radius: 8px;
     padding: 12px 16px;
     font-size: 0.88rem;
+    color: #4a3520;
     border: 1px solid #ddd0b8;
+    line-height: 1.75;
   }
   .explanation.show { display: block; }
   .explanation strong { color: #8b4513; }
 
+  .score-panel {
+    display: none;
+    background: linear-gradient(135deg, #5c3d1e, #8b6340);
+    color: #fdf6ec;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    margin-top: 32px;
+  }
+  .score-panel.show { display: block; }
+  .score-big { font-size: 3rem; font-weight: bold; margin: 12px 0; }
+  .score-label { font-size: 1rem; opacity: 0.85; }
+  .score-msg { margin-top: 14px; font-size: 0.95rem; line-height: 1.7; opacity: 0.9; }
+
   .submit-btn {
-    display: block; margin: 28px auto 0;
+    display: block;
+    margin: 28px auto 0;
     background: linear-gradient(135deg, #c0732a, #e8a055);
-    color: white; border: none; border-radius: 30px;
-    padding: 14px 40px; cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(192,115,42,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(192,115,42,0.45); }
+
+  .answered-count {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #8b6340;
+    margin-top: 20px;
   }
 
-  .name-email-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; justify-content: center; }
-  .name-email-row input { padding: 12px; border-radius: 8px; border: 1.5px solid #d4c3a3; width: 250px; }
+  .name-email-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .name-email-row input {
+    padding: 12px 16px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    border-radius: 8px;
+    border: 1.5px solid #d4c3a3;
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+    background: white;
+  }
+  .name-email-row input:focus {
+    border-color: #c0732a;
+  }
 </style>
 </head>
 <body>
 
 <header>
   <h1>快乐掉线？补丁在这 - 系统升级测验</h1>
-  <p>通过觉察修复生命底层的自动化代码</p>
+  <p>通过觉察修复生命底层的自动化代码｜50题</p>
 </header>
 <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
 
 <div class="container" id="quizContainer">
-  <div id="answeredCount" style="text-align:center; color:#8b6340; margin-bottom:15px;">已作答：0 / 50</div>
+  <div class="answered-count" id="answeredCount">已作答：0 / 50</div>
   <div class="name-email-row">
-    <input type="text" id="userName" placeholder="姓名（必填）" />
-    <input type="email" id="userEmail" placeholder="邮箱（必填）" />
+    <input type="text" id="userName" placeholder="请输入您的姓名（必填）" />
+    <input type="email" id="userEmail" placeholder="请输入电子邮箱（必填）" />
   </div>
-  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">提交查看成绩</button>
-  <div id="scorePanel" style="display:none; background:#5c3d1e; color:white; padding:30px; border-radius:12px; margin-top:20px; text-align:center;"></div>
+  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">提交测验，查看成绩</button>
+  <div class="score-panel" id="scorePanel"></div>
 </div>
 
 <script>
 const questions = [
   {
-    section: "第一部分：苦因诊断与错觉拆解",
+    section: "第一部分：苦因诊断与错觉拆解（题 1–10）",
     q: "既然外界环境总在变化，痛苦（世间）的本质究竟发生在哪里？",
     options: ["A. 无法预知的未来遭遇", "B. 内在身心的五蕴运作中", "C. 外部恶劣的社会环境", "D. 无法改变的既定过去"],
     answer: 1,
-    correct_exp: "苦不是外在的客体，而是主体对经验的反应。锁定身心五蕴，才能找到 **骇入** 系统的入口。",
-    wrong_exp: "若认为苦在外界，就会陷入试图控制环境的死循环，而忽略了观察产生痛苦的主体。"
+    correct_exp: "苦不是外在的客体，而是主体对经验的反应。锁定身心五蕴，才能找到 \"骇入\" 系统的入口。",
+    wrong_exp: "若认为苦在外界（A/C/D），就会陷入试图控制环境的死循环，而忽略了观察产生痛苦的主体。"
   },
   {
-    q: "为什么常说 “因与果都在当下”？",
+    q: "为什么常说 \"因与果都在当下\" ？",
     options: ["A. 当下的反应既是旧果的显现，也是新因的种下", "B. 因为过去已经彻底消失", "C. 因为未来充满了不确定性", "D. 这只是一种安慰性的心理暗示"],
     answer: 0,
-    correct_exp: "因果不是线性的时间轴，而是当下的互动模式。观察当下的反应，就是观察 **因果的运作**。",
-    wrong_exp: "选项描述没有揭示因果在实修观察中的 **共时性** 意义。"
+    correct_exp: "因果不是线性的时间轴，而是当下的互动模式。观察当下的反应，就是观察因果的运作。",
+    wrong_exp: "B 和 C 只是时间特性的描述，没有揭示因果在实修观察中的 \"共时性\" 意义。"
   },
   {
-    q: "物质快乐的一个底层 Bug 是它以什么为 “燃料”？",
+    q: "物质快乐的一个底层 Bug 是它以什么为 \"燃料\" ？",
     options: ["A. 物质的多寡", "B. 他人的赞美", "C. 不满足感（渴求）", "D. 满足感"],
     answer: 2,
-    correct_exp: "系统逻辑是：因为 **不满足** 所以 **追求**。一旦完全满足，动力消失，快乐随即掉线。",
-    wrong_exp: "满足感是快乐的结果，驱动快乐持续运作的推力恰恰是那份 **还想要更多** 的不安。"
+    correct_exp: "系统逻辑是：因为 \"不满足\" 所以 \"追求\" 。一旦完全满足，动力（燃料）消失，快乐随即掉线。",
+    wrong_exp: "选 D 是直觉误区，满足感是快乐的结果或幻象，驱动快乐持续运作的推力恰恰是那份 \"还想要更多\" 的不安。"
   },
   {
-    q: "为什么 “懂了很多道理，依然过不好这一生”？",
+    q: "为什么 \"懂了很多道理，依然过不好这一生\" ？",
     options: ["A. 理性表意识无法直接修复潜意识的自动化习性", "B. 道理本身不够深刻", "C. 缺乏足够的执行力", "D. 外部阻力太大"],
     answer: 0,
-    correct_exp: "理性与习性运行在不同层级，单靠信息输入无法改变 **自动驾驶系统** 的逻辑。",
-    wrong_exp: "这不是努力程度的问题，而是系统层级的断裂，需要通过 **觉察** 而非强力来修复。"
+    correct_exp: "理性（表意识）和习性（底层代码）运行在不同层级，单靠信息输入无法改变自动驾驶系统的逻辑。",
+    wrong_exp: "选 C 属于意志力误区。这不是努力程度的问题，而是系统层级的断裂，需要通过觉察而非强力来修复。"
   },
   {
-    q: "关于 “无常” 与 “苦” 的关系，哪项描述最准确？",
+    q: "关于 \"无常\" 与 \"苦\" 的关系，哪项描述最准确？",
     options: ["A. 无常是主观的，苦是客观的", "B. 两者都是不可更改的客观事实", "C. 只要消除无常，就能消除苦", "D. 无常是客观现象，苦是主观对无常的抗拒反应"],
     answer: 3,
-    correct_exp: "变化是自然规律，但我们想让它不变，这种 **落差** 产生了主观的苦。",
-    wrong_exp: "我们无法停止宇宙演化，只能通过改变 **主观反应** 来获得解脱。"
+    correct_exp: "变化（无常）是自然规律，但我们想让它不变（贪/嗔），这种落差产生了主观的 \"苦\" 。",
+    wrong_exp: "选 C 是战略错误。我们无法停止宇宙的演化，只能通过改变主观反应来获得解脱。"
   },
   {
-    q: "“我” 的错觉通常源于将什么视为固定不变？",
+    q: " \"我\" 的错觉通常源于将什么视为固定不变？",
     options: ["A. 瞬息万变的身心经验（五蕴）", "B. 身体的形状", "C. 社会地位与名声", "D. 遗传基因"],
     answer: 0,
-    correct_exp: "我们把一连串流动的念头、感受误认为是一个永恒的实体，这就是 **我执** 的根源。",
-    wrong_exp: "真正的错觉发生在将动态的 **经验流** 固化为自我中心的过程中。"
+    correct_exp: "我们把一连串流动的念头、感受误认为是一个永恒的实体，这就是 \"我执\" 的根源。",
+    wrong_exp: "B 和 C 是外在表象，真正的错觉发生在将动态的 \"经验流\" 固化为 \"自我中心\" 的过程中。"
   },
   {
-    q: "当 “欲望进度条” 达成 100% 时，心智系统通常会发生什么？",
-    options: ["A. 系统自动锁定当前的幸福", "B. 进入永久的平静状态", "C. 快乐瞬间掉线，并开启下一轮 “饥渴” 搜索", "D. 快乐程度持续指数级增长"],
+    q: "当 \"欲望进度条\" 达成 100% 时，心智系统通常会发生什么？",
+    options: ["A. 系统自动锁定当前的幸福", "B. 进入永久的平静状态", "C. 快乐瞬间掉线，并开启下一轮 \"饥渴\" 搜索", "D. 快乐程度持续指数级增长"],
     answer: 2,
-    correct_exp: "满足是快乐的终点。系统为了维持生命动力，必须立刻制造新的 **不满足感**。",
-    wrong_exp: "心智系统是一个动态驱动器，它不允许长期停留在 **无欲** 状态。"
+    correct_exp: "满足是快乐的终点。系统为了维持生命动力，必须立刻制造新的不满足感。",
+    wrong_exp: "选 B/D 是对快乐的浪漫化幻想。心智系统是一个动态驱动器，它不允许长期停留在 \"无欲\" 状态。"
   },
   {
-    q: "“应然” 与 “实然” 的巨大落差说明了什么？",
+    q: " \"应然\" 与 \"实然\" 的巨大落差说明了什么？",
     options: ["A. 我们对自己要求太高", "B. 理想的认知与底层的自动化行为存在脱节", "C. 道德标准是不切实际的", "D. 我们的社会环境太复杂"],
     answer: 1,
-    correct_exp: "这是系统诊断的关键：知道该做什么却做不到，证明 **底层程序** 仍受旧习性控制。",
-    wrong_exp: "这忽略了心智系统内部 **叙事层** 与 **执行层** 的断裂。"
+    correct_exp: "这是系统诊断的关键：知道该做什么（应然）却做不到，证明底层程序（实然）仍受旧习性控制。",
+    wrong_exp: "选 A/C 是在价值观上找原因，而忽略了心智系统内部 \"叙事层\" 与 \"执行层\" 的断裂。"
   },
   {
-    q: "所谓 “系统级修复（灭谛）”，其核心逻辑是：",
+    q: "所谓 \"系统级修复（灭谛）\" ，其核心逻辑是：",
     options: ["A. 识别并中止导致痛苦的底层代码运作", "B. 更换更高级的外界环境", "C. 压抑所有的欲望和念头", "D. 学习更多的哲学理论"],
     answer: 0,
-    correct_exp: "修复不是抹除功能，而是通过 **觉察** 看清代码错误，从而实现逻辑上的终止。",
-    wrong_exp: "压抑会造成系统崩溃，学习理论只是在增加 **文档说明**，没有修改代码。"
+    correct_exp: "修复不是抹除功能，而是通过 \"觉察\" 看清代码错误，从而实现逻辑上的终止。",
+    wrong_exp: "选 C（压抑）会造成系统崩溃，选 D 只是在增加文档说明，没有修改核心代码。"
   },
   {
-    q: "观察身心的变化时，为什么要强调 “非单一原因造成”？",
-    options: ["A. 为了说明运气的重要性", "B. 为了推卸个人责任", "C. 为了破除 “有一个主宰者在控制” 的错觉", "D. 为了增加理论的复杂性"],
+    q: "观察身心的变化时，为什么要强调 \"非单一原因造成\" ？",
+    options: ["A. 为了说明运气的重要性", "B. 为了推卸个人责任", "C. 为了破除 \"有一个主宰者在控制\" 的错觉", "D. 为了增加理论的复杂性"],
     answer: 2,
-    correct_exp: "只要理解了是 **众缘和合**，就能明白没有一个独立的 “我” 在绝对掌控，从而减轻控制欲。",
-    wrong_exp: "理解多因缘是为了更精准地干预 **核心条件**，而非放弃责任。"
+    correct_exp: "只要理解了是 \"众缘和合\" ，就能明白没有一个独立的 \"我\" 在绝对掌控，从而减轻控制欲。",
+    wrong_exp: "选 B 是对无我的误解。理解多因缘是为了更精准地干预核心条件，而非放弃责任。"
+  },
+  {
+    section: "第二部分：生命能量与行为模式（题 11–20）",
+    q: " \"段食\" 除了生理上的食物，广义上还包括维持生存的什么？",
+    options: ["A. 呼吸", "B. 睡眠", "C. 金钱", "D. 社交"],
+    answer: 0,
+    correct_exp: "段食是能量的最基础获取。呼吸是身心连接的枢纽，也是能量摄取的持续过程。",
+    wrong_exp: "选 C/D 属于社会化需求，而非生命层级的 \"基础摄取\" 。"
+  },
+  {
+    q: "为什么 \"肌肉记忆\" 被视为身心系统的一部分？",
+    options: ["A. 证明运动员很刻苦", "B. 仅仅是生理反射，不涉及心智", "C. 为了说明锻炼的重要性", "D. 证明身体潜藏着自动化的反应程序"],
+    answer: 3,
+    correct_exp: "业力（习惯）不仅在大脑中，更刻印在身体的每一个细胞和反应逻辑里。",
+    wrong_exp: "选 B 割裂了身心连接。心智的贪嗔往往通过身体的紧张 and 肌肉惯性表现出来。"
+  },
+  {
+    q: " \"触食\" 在日常生活中最直接的表现是：",
+    options: ["A. 思考未来的计划", "B. 六根（感官）接触外境时带来的信息冲刷", "C. 吃一顿丰盛的晚餐", "D. 深度睡眠的状态"],
+    answer: 1,
+    correct_exp: " \"触\" 是外界信号转化为内在感受的接口。我们不断渴望感官刺激，本质是在 \"吃\" 这些信息。",
+    wrong_exp: "选 C 混淆了段食。触食强调的是感官入口的 \"接触\" 瞬间。"
+  },
+  {
+    q: "什么是 \"意思食\" ？它如何驱动生命？",
+    options: ["A. 我们的意向、意志力和达成目标的渴望", "B. 对食物的思考", "C. 下意识的分别心", "D. 对过去的怀念"],
+    answer: 0,
+    correct_exp: " \"想要做什么\" 的意志是生命的推进力。如果没有意思食，生命将失去延续的动力。",
+    wrong_exp: "选 D 侧重于记忆，而意思食侧重于向前的、推动性的意愿能量。"
+  },
+  {
+    q: " \"识食\" 在底层逻辑中扮演什么角色？",
+    options: ["A. 逻辑思维能力", "B. 艺术创作的灵感", "C. 维持 \"我\" 与 \"非我\" 界限的求生本能", "D. 道德水平的高低"],
+    answer: 2,
+    correct_exp: "识食是最深层的摄取，它通过不断的 \"分别\" 来确认自我的存在，是轮回的底层核心。",
+    wrong_exp: "选 A 将 \"识\" 窄化为显意识的推理，忽略了它作为生命延续本能的能量属性。"
+  },
+  {
+    q: "现代科学中的 \"神经元回路惯性放电\" 对应佛法中的哪个概念？",
+    options: ["A. 禅定", "B. 慈悲", "C. 智慧", "D. 业（Kamma）"],
+    answer: 3,
+    correct_exp: " \"业\" 不是神秘的报应，而是行为、思考的习惯性回路。放电次数越多，回路越牢固。",
+    wrong_exp: "选 A/B/C 都是修行后的品质，而 \"业\" 描述的是系统未修复前的原始运行惯性。"
+  },
+  {
+    q: "为什么说 \"身体是潜意识的剧本\" ？",
+    options: ["A. 压力和习性会物理性地存储在荷尔蒙 and 肌肉状态中", "B. 因为我们可以通过身体演戏", "C. 因为身体受大脑完全支配", "D. 因为基因决定了一切"],
+    answer: 0,
+    correct_exp: "心理层面的苦因会具象化为生理特征。调身可以直接干预这些底层代码。",
+    wrong_exp: "选 C 是忽略了身体反馈对心智的巨大反作用。身体往往比大脑更先对 \"贪嗔\" 做出反应。"
+  },
+  {
+    q: "在四念住中， \"观身\" 时调整呼吸的深层意义是：",
+    options: ["A. 增加肺活量", "B. 仅仅为了放松肌肉", "C. 通过调节生理节律，间接干预心理惯性", "D. 练习一种特殊的肺部运动"],
+    answer: 2,
+    correct_exp: "呼吸是唯一既能自动运作又能手动干预的系统。它是我们 \"骇入\" 潜意识系统的操纵杆。",
+    wrong_exp: "选 A/B 停留在生理层面，没有意识到呼吸在调节 \"受\" 和 \"行\" 中的桥梁作用。"
+  },
+  {
+    q: " \"左脑叙事者\" 在心智系统中的主要错误是：",
+    options: ["A. 它总是为自动发生的习性行为编造虚假的理由", "B. 它的计算速度太慢", "C. 它不具备逻辑分析能力", "D. 它无法识别图像"],
+    answer: 0,
+    correct_exp: "当习性让我们生气时，左脑会编织 \"是因为他不对\" 的剧本，让我们误以为是理性的选择。",
+    wrong_exp: "选 C 是错误的，左脑非常有逻辑，但它的逻辑常被用来证明 \"贪嗔\" 的合理性。"
+  },
+  {
+    q: " \"自动驾驶系统\" 失效的标志通常是什么？",
+    options: ["A. 生活变得一帆风顺", "B. 记忆力大幅度退化", "C. 不再需要睡觉", "D. 开始对当下的习性反应产生觉察"],
+    answer: 3,
+    correct_exp: "只要你意识到 \"我正在重复旧习惯\" ，自动驾驶就被暂时切换到了手动模式，这是改变的开始。",
+    wrong_exp: "选 A 反而可能是自动驾驶运行良好的标志。真正的修复是在 \"冲突\" 中产生觉察。"
+  },
+  {
+    section: "第三部分：缘起逻辑与实战观察（题 21–40）",
+    q: "十二缘起中的 \"无明\" 是指：",
+    options: ["A. 没有文化知识", "B. 看不见拉扯自己的惯性力量，对身心运作无察觉", "C. 故意犯罪", "D. 眼睛看不见东西"],
+    answer: 1,
+    correct_exp: "无明不是智商低，而是 \"盲视\" 。你看不见代码在运行，所以被代码完全控制。",
+    wrong_exp: "选 A 混淆了世间知识与生命智慧。"
+  },
+  {
+    q: "为什么 \"行\" 支被称为 \"老剧本\" ？",
+    options: ["A. 因为它讲述的是古代故事", "B. 因为它是一种演艺技巧", "C. 因为它基于过往经验自动给当下世界贴标签", "D. 因为它代表了社会的传统美德"],
+    answer: 2,
+    correct_exp: " \"行\" 是盲目的冲动。我们看到的不是真实的世界，而是经过旧记忆过滤后的投影。",
+    wrong_exp: "选 D 将其误认为文化概念，实际上它是心智系统处理信息的 \"预设偏差\" 。"
+  },
+  {
+    q: "在缘起中， \"识\" 如何造成 \"虚假真实\" ？",
+    options: ["A. 它对主观编织出的心理现实产生信仰 and 误导", "B. 产生幻觉", "C. 忘记了自己的姓名", "D. 无法通过逻辑测试"],
+    answer: 0,
+    correct_exp: " \"识\" 确认了那个 \"剧本\" 是真的，让你对自己的愤怒、委屈信以为真。",
+    wrong_exp: "选 B 太极端。虚假真实不需要幻觉，我们对平凡生活的错觉就是这种误导。"
+  },
+  {
+    q: " \"六窗淌开\" 这一比喻描述的是什么状态？",
+    options: ["A. 房屋通风良好", "B. 心胸开阔", "C. 愿意接受不同建议", "D. 六个感官入口持续接收外界信息的轰炸"],
+    answer: 3,
+    correct_exp: "如果不懂得 \"护持根门\" ，信息洪流就会引爆潜意识里的旧习性。",
+    wrong_exp: "选 B 是对文学词汇的误判。在缘起语境下，这描述的是一种风险状态。"
+  },
+  {
+    q: " \"触\" 支为什么被形容为 \"引爆潜意识的导火索\" ？",
+    options: ["A. 因为接触会产生火花", "B. 因为接触导致冲突", "C. 因为接触瞬间激活了隐藏在潜意识里的习性", "D. 因为接触会带来温暖"],
+    answer: 2,
+    correct_exp: "一个眼神、一句话本身是中性的，但它能瞬间点燃你积压了数年的 \"火药桶\" 。",
+    wrong_exp: "选 B 是结果，而非原理。原理在于 \"触\" 开启了与潜意识数据库的自动化连接。"
+  },
+  {
+    q: "当愉悦的 \"受\" 发生时，最大的风险是什么？",
+    options: ["A. 会让我们误以为找到了 \"真实且永恒\" 的快乐", "B. 会感到太开心", "C. 会让大脑反应变慢", "D. 会引起他人的嫉妒"],
+    answer: 0,
+    correct_exp: "愉悦感是短暂的信号，但我们本能地想抓住它，从而开启了求而不得的循环。",
+    wrong_exp: "选 B 没看到背后的隐忧。对快乐的 \"误判 and 执着\" 才是问题。"
+  },
+  {
+    q: " \"受、爱、取\" 的过程被比喻为 \"成瘾反应\" ，因为：",
+    options: ["A. 这涉及毒品", "B. 无法被意志力强行终止", "C. 这只是某种心理疾病", "D. 满足加深依赖，不满足加剧渴求"],
+    answer: 3,
+    correct_exp: "贪婪的特点是：越满足，阈值越高，需求越烈。",
+    wrong_exp: "选 B 虽然有一定道理，但没有揭示出 \"满足与渴求相互反哺\" 的逻辑。"
+  },
+  {
+    q: "这里的 \"取\" 在心智运作中表现为：",
+    options: ["A. 拿走别人的东西", "B. 获得某种学位", "C. 内心紧紧抓住某种情绪或观念不放", "D. 主动放弃权利"],
+    answer: 2,
+    correct_exp: "取是内心的收缩和占有。当你紧抓着 \"我是对的\" 这个念头不放时，就是处于 \"取\" 。",
+    wrong_exp: "选 A 停留在物质层面。在心法中， \"取\" 更多发生在精神层面。"
+  },
+  {
+    q: " \"有（Bhava）\" 代表的是一种什么样的生命状态？",
+    options: ["A. 一种基于习惯形成的、即将爆发的心理倾向", "B. 拥有很多财产", "C. 现有的社会身份", "D. 存在的虚无感"],
+    answer: 0,
+    correct_exp: " \"有\" 是因缘成熟前的临界点。它像一个装满子弹的枪膛，只要扣动扳机就会爆发。",
+    wrong_exp: "选 B 又是世俗化的误解。 \"有\" 在缘起中是动态的 \"成为\" 。"
+  },
+  {
+    q: "为什么 \"生\" 之后必然跟着 \"老死\" ？",
+    options: ["A. 凡是生起的现象，本质上都在走向衰坏", "B. 这是生物学的必然规律", "C. 因为医疗水平不够", "D. 这只是一种悲观的说法"],
+    answer: 0,
+    correct_exp: "一旦产生，就注定了能量的耗散。这是无常的必然。",
+    wrong_exp: "选 B 范围太窄。这里的 \"死\" 也指快乐的消失、念头的陨灭。"
+  },
+  {
+    q: " \"焦虑\" 模式在心智底层类似于哪一种状态？",
+    options: ["A. 饿鬼般的饥渴求索", "B. 地狱般的极度煎熬", "C. 天神般的纵欲", "D. 动物般的愚昧"],
+    answer: 1,
+    correct_exp: "焦虑是内心对自己极度的拉扯，其剧烈程度在心理维度上等同于 \"地狱\" 。",
+    wrong_exp: "选 A 对应的是 \"贪\" ，选 D 对应的是 \"痴\" 。"
+  },
+  {
+    q: " \"纵欲\" 模式之所以被列为 \"存在模式\" 之一，是因为：",
+    options: ["A. 它太快乐了", "B. 它是社会进步的标志", "C. 只有少数人能做到", "D. 它通过感官刺激来逃避深层的虚无感"],
+    answer: 3,
+    correct_exp: "纵欲是系统在快乐即将掉线时的疯狂 \"补救\" ，本质是系统功能不健全的表现。",
+    wrong_exp: "选 A 忽略了纵欲后的空虚。"
+  },
+  {
+    q: "观察 \"心\" 的时候，重点观察什么？",
+    options: ["A. 现在的贪、嗔、痴或平静等心理质量", "B. 过去的辉煌", "C. 大脑的物理结构", "D. 未来的职业规划"],
+    answer: 0,
+    correct_exp: "观心是实时的。此时此刻，你的心是紧缩的还是开放的？",
+    wrong_exp: "选 D 将其误认为思考。观心是 \"觉知思考背后的质量\" 。"
+  },
+  {
+    q: " \"观法\" 的意义在于：",
+    options: ["A. 学习法律知识", "B. 研究哲学历史", "C. 识别并归类各种心理规律 and 模式", "D. 观察大自然的演变"],
+    answer: 2,
+    correct_exp: "当你意识到 \"这种愤怒是条件的产物\" ，你就是在观法。",
+    wrong_exp: "选 D 过于外向。在四念住中，法是指内在的心理规律。"
+  },
+  {
+    q: "在整个缘起链条中，哪一个环节是我们可以 \"切断\" 的突破口？",
+    options: ["A. 触与受之间的觉察", "B. 无明", "C. 已经发生的生", "D. 过去的行"],
+    answer: 0,
+    correct_exp: "感受生起了，但在产生 \"爱/取\" 之前，通过觉察可以阻断自动化循环。",
+    wrong_exp: "选 D 是妄想；选 B 是长期目标。A 是唯一的 \"实战点\" 。"
+  },
+  {
+    q: "为什么说 \"执着\" 就是 \"追求与排斥\" ？",
+    options: ["A. 追求是好的，排斥是坏的", "B. 只要内心有了偏向，就失去了平衡 and 自由", "C. 这两个词意思一样", "D. 为了增加词汇量"],
+    answer: 1,
+    correct_exp: "执着不分正负。只要你在拉扯或抓取，系统就处于紧缩状态。",
+    wrong_exp: "选 A 是常见的伦理误区。过度的追求同样是系统的负担。"
+  },
+  {
+    q: " \"放下\" 的正确姿态是：",
+    options: ["A. 把它扔掉", "B. 彻底忘记那件事", "C. 假装不关心", "D. 允许体验存在，知道它在，但不追随它"],
+    answer: 3,
+    correct_exp: "放下不是物理动作。不追求也不排斥，让现象如实流过。",
+    wrong_exp: "选 C 是压抑，选 B 是逃避。"
+  },
+  {
+    q: " \"业力\" 和 \"习性\" 如何相互强化？",
+    options: ["A. 每一次重复旧反应，都会加深神经回路", "B. 它们完全不相关", "C. 只要想一次就会消失", "D. 只有做坏事才会强化"],
+    answer: 0,
+    correct_exp: "如果你惯于生气，系统就会优化生气的路径，直到它变成本能。",
+    wrong_exp: "选 D 忽略了生活小习惯也在塑造回路。"
+  },
+  {
+    q: " \"护持根门\" 在生活场景中意味着什么？",
+    options: ["A. 锁好大门", "B. 不看电视，不玩手机", "C. 在感官接触信息的瞬间保持警觉", "D. 眼睛只看地板"],
+    answer: 2,
+    correct_exp: "知道是在接收信号，但不被信号勾走。",
+    wrong_exp: "选 B 是避世，不是修心。"
+  },
+  {
+    q: "为什么说修复系统的最终目标是 \"离苦\" 而非 \"发财\" ？",
+    options: ["A. 这是一个道德要求", "B. 发财会让人变坏", "C. 发财带来的快乐仍以不满足为燃料，无法解决系统冗余", "D. 因为发财太难了"],
+    answer: 2,
+    correct_exp: "补丁解决的是机制问题。如果机制不改，财富只会加速下一次掉线。",
+    wrong_exp: "选 B 是偏见。发财是外在缘，离苦是内在逻辑。"
+  },
+  {
+    section: "第四部分：高级集成与终极修复（题 41–50）",
+    q: "神经科学家研究 \"骇入大脑\" 说明了什么？",
+    options: ["A. 现代科学正在从神经机制层面证实古代智慧的有效性", "B. 佛法是伪科学", "C. 我们不再需要修行", "D. 机器可以代替人类解脱"],
+    answer: 0,
+    correct_exp: "当科学谈论 \"重塑大脑皮层\" 时，本质上是在解读 \"业力的消解\" 。",
+    wrong_exp: "选 D 是幻想。系统的运行必须由个体通过觉察来修复。"
+  },
+  {
+    q: " \"旧业（潜藏的牵引）\" 通常如何干扰当下的决策？",
+    options: ["A. 强制我们执行动作", "B. 像鬼魂一样附身", "C. 隐藏在背景噪音中，提供一个带有偏见的 \"第一反应\" ", "D. 完全不干扰"],
+    answer: 2,
+    correct_exp: "它决定了你的直觉。如果你不加觉察，通常会直接听从那个偏见指令。",
+    wrong_exp: "选 A 太绝对。我们有选择权。"
+  },
+  {
+    q: "在信息泛滥的时代， \"触食\" 过量会导致：",
+    options: ["A. 知识渊博", "B. 大脑开发程度提高", "C. 心理焦虑、注意力涣散，以及贪嗔习性频繁被激活", "D. 视力下降"],
+    answer: 2,
+    correct_exp: "缺乏过滤的高频刺激会迅速耗尽系统的平静能量。",
+    wrong_exp: "选 A 混淆了信息与知识。"
+  },
+  {
+    q: "在四念住中，最基础且容易上手的是：",
+    options: ["A. 观身（呼吸与身体感觉）", "B. 观法", "C. 观心", "D. 全部同时开始"],
+    answer: 0,
+    correct_exp: "身体是最粗大的现实。先稳住呼吸，才能进一步觉察。",
+    wrong_exp: "选 B 容易陷入哲学玄想。"
+  },
+  {
+    q: "为什么说 \"贪嗔\" 是系统的两个极端 Bug？",
+    options: ["A. 它们名字不好听", "B. 它们是相反的，所以会抵消", "C. 只在坏人身上出现", "D. 它们本质上都是在抗拒现状"],
+    answer: 3,
+    correct_exp: "只要抗拒 \"如其所是\" 的当下，系统就无法进入平衡状态。",
+    wrong_exp: "选 B 是大错。贪与嗔往往互相加成。"
+  },
+  {
+    q: " \"知道、允许\" 作为方法论，其核心在于：",
+    options: ["A. 变得冷漠无情", "B. 以觉察代替抓取，让能量自然流转", "C. 逆来顺受", "D. 放弃思考"],
+    answer: 1,
+    correct_exp: "这是针对十二缘起核心链条的定点打击。",
+    wrong_exp: "选 C 缺乏了觉察的主动性。"
+  },
+  {
+    q: "如果把心智比作电脑系统， \"集谛\" 相当于：",
+    options: ["A. 显示器", "B. 导致死机的恶意代码 and 冗余垃圾", "C. 操作系统本身", "D. 键盘鼠标"],
+    answer: 1,
+    correct_exp: "集是苦之因。它是后天累积的逻辑错误。",
+    wrong_exp: "选 C 是悲观的误导。系统（心性）本身是清明的。"
+  },
+  {
+    q: "修复后的系统（灭谛）特征是：",
+    options: ["A. 没有感情，像个机器人", "B. 拥有超自然力量", "C. 反应敏捷，但不再带有自我损耗的拉扯", "D. 永远都在大笑"],
+    answer: 2,
+    correct_exp: "修复不是关闭功能。你可以正常生活，但不再会被焦虑折磨。",
+    wrong_exp: "选 A 是刻板印象。解脱是 \"高效率运行\" 。"
+  },
+  {
+    q: "为什么说 \"执着是系统的一种紧缩状态\" ？",
+    options: ["A. 执着限制了处理可能性的能力，使资源自锁在单一贪嗔点上", "B. 因为执着时肌肉会紧张", "C. 这只是一种修辞手法", "D. 为了说明执着会让人变瘦"],
+    answer: 0,
+    correct_exp: "执着会让视野变得极窄，系统陷入死循环。",
+    wrong_exp: "选 B 是生理表现而非本质。"
+  },
+  {
+    q: "最终，我们通过这套 \"补丁\" 想要实现的是：",
+    options: ["A. 成为人群中最聪明的人", "B. 获得长生不老", "C. 证明理论的正确性", "D. 看清并终结那个 \"无意识受苦\" 的惯性循环"],
+    answer: 3,
+    correct_exp: "即使环境依旧，你已重获了生命的自主权。",
+    wrong_exp: "选 A 是另一种贪。修行是为了从幻觉中醒来。"
   }
-  // ... (其余40题逻辑以此类推，题目用引号，解析用粗体)
 ];
 
-// 初始化函数
 function buildQuiz() {
   const container = document.getElementById('quizContainer');
   let currentSection = '';
-  const insertBefore = document.getElementById('answeredCount');
+  const insertBefore = document.querySelector('.answered-count');
 
   questions.forEach((q, i) => {
     if (q.section && q.section !== currentSection) {
@@ -213,48 +587,37 @@ function buildQuiz() {
     const card = document.createElement('div');
     card.className = 'question-card';
     card.id = 'q' + i;
-    card.innerHTML = `
-      <div class="q-meta"><div class="q-number">${i+1}</div></div>
-      <div class="q-text">${q.q}</div>
-      <div class="options"></div>
-      <div class="explanation"></div>
-    `;
 
-    const optsDiv = card.querySelector('.options');
-    const expDiv = card.querySelector('.explanation');
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+    meta.innerHTML = `<div class="q-number">${i+1}</div>`;
+    card.appendChild(meta);
+
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.q;
+    card.appendChild(qtext);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+    const exp = document.createElement('div');
+    exp.className = 'explanation';
 
     q.options.forEach((opt, j) => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
-      // 选项中使用粗体解析
-      btn.innerHTML = parseBold(opt);
-      btn.onclick = () => {
-        if (answered[i] !== null) return;
-        answered[i] = j;
-        const btns = optsDiv.querySelectorAll('.option-btn');
-        btns.forEach(b => b.disabled = true);
-        
-        if (j === q.answer) {
-          btn.classList.add('correct');
-          expDiv.innerHTML = `✅ <strong>答对了！</strong> ${parseBold(q.correct_exp)}`;
-        } else {
-          btn.classList.add('wrong');
-          btns[q.answer].classList.add('reveal');
-          expDiv.innerHTML = `❌ <strong>解析：</strong> ${parseBold(q.wrong_exp)}`;
-        }
-        expDiv.classList.add('show');
-        updateProgress();
-      };
-      optsDiv.appendChild(btn);
+      btn.textContent = opt;
+      btn.onclick = () => selectOption(i, j, btn, opts, exp);
+      opts.appendChild(btn);
     });
+    card.appendChild(opts);
+    card.appendChild(exp);
 
     container.insertBefore(card, insertBefore);
   });
 }
 
-function parseBold(text) {
-  return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-}
+let answered = new Array(questions.length).fill(null);
 
 function selectOption(qIdx, optIdx, btn, optsDiv, expDiv) {
   if (answered[qIdx] !== null) return;
@@ -263,13 +626,14 @@ function selectOption(qIdx, optIdx, btn, optsDiv, expDiv) {
   const buttons = optsDiv.querySelectorAll('.option-btn');
   buttons.forEach(b => b.disabled = true);
 
-  if (optIdx === questions[qIdx].answer) {
+  const isCorrect = (optIdx === questions[qIdx].answer);
+  if (isCorrect) {
     btn.classList.add('correct');
-    expDiv.innerHTML = '✅ <strong>答对了！</strong> ' + parseBold(questions[qIdx].correct_exp);
+    expDiv.innerHTML = '✅ <strong>答对了！</strong> ' + questions[qIdx].correct_exp;
   } else {
     btn.classList.add('wrong');
     buttons[questions[qIdx].answer].classList.add('reveal');
-    expDiv.innerHTML = '❌ <strong>解析：</strong>' + parseBold(questions[qIdx].wrong_exp);
+    expDiv.innerHTML = '❌ <strong>解析：</strong>' + questions[qIdx].wrong_exp;
   }
   expDiv.classList.add('show');
   document.getElementById('q' + qIdx).classList.add('answered');
@@ -283,8 +647,16 @@ function submitQuiz() {
   const nameInput = document.getElementById('userName').value.trim();
   const emailInput = document.getElementById('userEmail').value.trim();
 
-  if (!nameInput) { alert('请填写您的姓名。'); return; }
-  if (!emailInput || !emailInput.includes('@')) { alert('请填写有效的电子邮箱地址。'); return; }
+  if (!nameInput) {
+    alert('请填写您的姓名。');
+    document.getElementById('userName').focus();
+    return;
+  }
+  if (!emailInput || !emailInput.includes('@')) {
+    alert('请填写有效的电子邮箱地址。');
+    document.getElementById('userEmail').focus();
+    return;
+  }
 
   const unanswered = answered.reduce((acc, a, i) => a === null ? acc.concat(i + 1) : acc, []);
   if (unanswered.length > 0) {
@@ -307,15 +679,17 @@ function submitQuiz() {
     if (!secStats[currentSectionName]) secStats[currentSectionName] = { correct: 0, total: 0 };
     secStats[currentSectionName].total++;
 
-    if (answered[i] === q.answer) {
+    const userAns = answered[i];
+    if (userAns === q.answer) {
       correct++;
       secStats[currentSectionName].correct++;
     }
-    answerLetters.push(['A','B','C','D'][answered[i]]);
+    answerLetters.push(['A','B','C','D'][userAns]);
   });
 
   const total = questions.length;
   const pct = Math.round(correct / total * 100);
+
   const formattedSecScores = {};
   for (let sec in secStats) {
     formattedSecScores[sec] = `${secStats[sec].correct}/${secStats[sec].total}`;
@@ -350,7 +724,7 @@ function showScorePanel(correct, total, pct) {
   if (pct >= 90) msg = '非常出色！您对四圣谛、缘起与三法印的理解已相当深入，继续保持正念修行。';
   else if (pct >= 75) msg = '理解不错！有几个概念还可以再深入觉察，建议回顾解析，结合自身经验再反思。';
   else if (pct >= 60) msg = '有一定基础，但还有不少误解需要厘清。建议重新阅读解析，多从生活场景中观察。';
-  else msg = '这些概念需要更多时间消化。不急，慢慢来——佛法不是靠 **知道**，而是靠 **觉察**。建议从缘起开始重新学习。';
+  else msg = '这些概念需要更多时间消化。不急，慢慢来——佛法不是靠 \"知道\" ，而是靠 \"觉察\" 。建议从缘起开始重新学习。';
 
   const panel = document.getElementById('scorePanel');
   panel.innerHTML = `
