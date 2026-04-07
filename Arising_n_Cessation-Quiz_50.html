@@ -256,22 +256,112 @@ function parseBold(text) {
   return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 }
 
-let answered = new Array(questions.length).fill(null);
+function selectOption(qIdx, optIdx, btn, optsDiv, expDiv) {
+  if (answered[qIdx] !== null) return;
+  answered[qIdx] = optIdx;
 
-function updateProgress() {
+  const buttons = optsDiv.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (optIdx === questions[qIdx].answer) {
+    btn.classList.add('correct');
+    expDiv.innerHTML = '✅ <strong>答对了！</strong> ' + parseBold(questions[qIdx].correct_exp);
+  } else {
+    btn.classList.add('wrong');
+    buttons[questions[qIdx].answer].classList.add('reveal');
+    expDiv.innerHTML = '❌ <strong>解析：</strong>' + parseBold(questions[qIdx].wrong_exp);
+  }
+  expDiv.classList.add('show');
+  document.getElementById('q' + qIdx).classList.add('answered');
+
   const count = answered.filter(a => a !== null).length;
   document.getElementById('answeredCount').textContent = `已作答：${count} / ${questions.length}`;
   document.getElementById('progressBar').style.width = (count / questions.length * 100) + '%';
 }
 
 function submitQuiz() {
-  const name = document.getElementById('userName').value.trim();
-  if(!name) { alert("请填写姓名"); return; }
-  
-  const correct = answered.reduce((acc, val, i) => val === questions[i].answer ? acc + 1 : acc, 0);
+  const nameInput = document.getElementById('userName').value.trim();
+  const emailInput = document.getElementById('userEmail').value.trim();
+
+  if (!nameInput) { alert('请填写您的姓名。'); return; }
+  if (!emailInput || !emailInput.includes('@')) { alert('请填写有效的电子邮箱地址。'); return; }
+
+  const unanswered = answered.reduce((acc, a, i) => a === null ? acc.concat(i + 1) : acc, []);
+  if (unanswered.length > 0) {
+    alert(`您还有 ${unanswered.length} 题未作答（第 ${unanswered.join('、')} 题），请完成所有题目后再提交。`);
+    document.getElementById('q' + (unanswered[0] - 1)).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.textContent = '正在提交...';
+  submitBtn.disabled = true;
+
+  let correct = 0;
+  const secStats = {};
+  let currentSectionName = '';
+  const answerLetters = [];
+
+  questions.forEach((q, i) => {
+    if (q.section) currentSectionName = q.section;
+    if (!secStats[currentSectionName]) secStats[currentSectionName] = { correct: 0, total: 0 };
+    secStats[currentSectionName].total++;
+
+    if (answered[i] === q.answer) {
+      correct++;
+      secStats[currentSectionName].correct++;
+    }
+    answerLetters.push(['A','B','C','D'][answered[i]]);
+  });
+
+  const total = questions.length;
+  const pct = Math.round(correct / total * 100);
+  const formattedSecScores = {};
+  for (let sec in secStats) {
+    formattedSecScores[sec] = `${secStats[sec].correct}/${secStats[sec].total}`;
+  }
+
+  const payload = {
+    name: nameInput,
+    email: emailInput,
+    totalScore: `${correct}/${total}`,
+    percentage: pct + '%',
+    sectionScores: formattedSecScores,
+    answers: answerLetters
+  };
+
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxv5GM2KG2i1yBUYwmSvSPEoo3gNA0JyELRomBtpeTIjAcCOt3WLnyH6u3-nEwc_73pqw/exec";
+
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    showScorePanel(correct, total, pct);
+  })
+  .catch(() => {
+    showScorePanel(correct, total, pct);
+  });
+}
+
+function showScorePanel(correct, total, pct) {
+  let msg = '';
+  if (pct >= 90) msg = '非常出色！您对四圣谛、缘起与三法印的理解已相当深入，继续保持正念修行。';
+  else if (pct >= 75) msg = '理解不错！有几个概念还可以再深入觉察，建议回顾解析，结合自身经验再反思。';
+  else if (pct >= 60) msg = '有一定基础，但还有不少误解需要厘清。建议重新阅读解析，多从生活场景中观察。';
+  else msg = '这些概念需要更多时间消化。不急，慢慢来——佛法不是靠 **知道**，而是靠 **觉察**。建议从缘起开始重新学习。';
+
   const panel = document.getElementById('scorePanel');
-  panel.style.display = 'block';
-  panel.innerHTML = `<h2>测验完成！</h2><p>${name}，你的得分是：${correct} / ${questions.length}</p>`;
+  panel.innerHTML = `
+    <div class="score-label">您的得分</div>
+    <div class="score-big">${correct} / ${total}</div>
+    <div class="score-label">${pct}%</div>
+    <div class="score-msg">${msg}</div>
+  `;
+  panel.classList.add('show');
+  document.getElementById('submitBtn').style.display = 'none';
+  document.querySelector('.name-email-row').style.display = 'none';
   panel.scrollIntoView({ behavior: 'smooth' });
 }
 
