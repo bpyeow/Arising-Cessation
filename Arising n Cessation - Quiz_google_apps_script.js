@@ -181,7 +181,7 @@ function sendResultEmail(data) {
     '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f5f0ea;font-family:\'PingFang SC\',\'Microsoft YaHei\',sans-serif;">' +
 
     // Header
-    '<div style="background:linear-gradient(135deg,#5c3d1e,#8b6340);color:#fdf6ec;text-align:center;padding:36px 20px 28px;">' +
+    '<div style="background:linear-gradient(135deg,#5c3d1e,#8b6340);color:#5c3d1e;text-align:center;padding:36px 20px 28px;">' +
       '<h1 style="margin:0 0 6px;font-size:22px;letter-spacing:2px;">快乐掉线？补丁在这</h1>' +
       '<p style="margin:0;font-size:14px;opacity:0.85;">系统升级测验 · 成绩单</p>' +
     '</div>' +
@@ -191,7 +191,7 @@ function sendResultEmail(data) {
       '<p style="font-size:15px;color:#5c3d1e;margin:0 0 4px;">亲爱的 <strong>' + name + '</strong>，</p>' +
       '<p style="font-size:14px;color:#7a6040;margin:0 0 20px;">感谢您完成本次测验。以下是您的完整成绩单。</p>' +
 
-      '<div style="background:linear-gradient(135deg,#5c3d1e,#8b6340);border-radius:16px;padding:28px;text-align:center;color:#fdf6ec;margin-bottom:24px;">' +
+      '<div style="background:linear-gradient(135deg,#5c3d1e,#8b6340);border-radius:16px;padding:28px;text-align:center;color:#5c3d1e;margin-bottom:24px;">' +
         '<div style="font-size:13px;opacity:0.85;margin-bottom:6px;">您的得分</div>' +
         '<div style="font-size:52px;font-weight:bold;line-height:1;">' + totalScore + '</div>' +
         '<div style="font-size:24px;margin:6px 0;">' + percentage + '</div>' +
@@ -248,7 +248,7 @@ function testDoPost() {
 
   var mockData = {
     name: '测试用户',
-    email: 'test@example.com',   // ← 改为您的真实邮箱以测试收信
+    email: 'bpyeow@hotmail.com',   // ← 改为您的真实邮箱以测试收信
     totalScore: '42/50',
     percentage: '84%',
     sendEmail: true,
