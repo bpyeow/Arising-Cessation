@@ -147,7 +147,14 @@
   .score-label { font-size: 1rem; opacity: 0.85; }
   .score-msg { margin-top: 14px; font-size: 0.95rem; line-height: 1.7; opacity: 0.9; }
 
-  .submit-btn {
+  .score-email-note {
+    margin-top: 16px;
+    font-size: 0.88rem;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
     display: block;
     margin: 28px auto 0;
     background: linear-gradient(135deg, #c0732a, #e8a055);
@@ -205,7 +212,6 @@
 <div class="container" id="quizContainer">
   <div class="answered-count" id="answeredCount">已作答：0 / 50</div>
   <div class="name-email-row">
-    <input type="text" id="userName" placeholder="请输入您的姓名（必填）" />
     <input type="email" id="userEmail" placeholder="请输入电子邮箱（必填）" />
   </div>
   <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">提交测验，查看成绩</button>
@@ -644,14 +650,8 @@ function selectOption(qIdx, optIdx, btn, optsDiv, expDiv) {
 }
 
 function submitQuiz() {
-  const nameInput = document.getElementById('userName').value.trim();
+  const nameInput = '';
   const emailInput = document.getElementById('userEmail').value.trim();
-
-  if (!nameInput) {
-    alert('请填写您的姓名。');
-    document.getElementById('userName').focus();
-    return;
-  }
   if (!emailInput || !emailInput.includes('@')) {
     alert('请填写有效的电子邮箱地址。');
     document.getElementById('userEmail').focus();
@@ -706,25 +706,55 @@ function submitQuiz() {
 
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxv5GM2KG2i1yBUYwmSvSPEoo3gNA0JyELRomBtpeTIjAcCOt3WLnyH6u3-nEwc_73pqw/exec";
 
+  // Build full question detail for email
+  const questionDetails = [];
+  let currentSectionForEmail = '';
+  questions.forEach((q, i) => {
+    if (q.section) currentSectionForEmail = q.section;
+    const userAnsIdx = answered[i];
+    const isCorrect = (userAnsIdx === q.answer);
+    questionDetails.push({
+      section: q.section || null,
+      num: i + 1,
+      q: q.q,
+      options: q.options,
+      userAnswer: userAnsIdx,
+      correctAnswer: q.answer,
+      isCorrect: isCorrect,
+      correct_exp: q.correct_exp,
+      wrong_exp: q.wrong_exp
+    });
+  });
+
+  const fullPayload = {
+    ...payload,
+    sendEmail: true,
+    questionDetails: questionDetails
+  };
+
   fetch(WEB_APP_URL, {
     method: 'POST',
     mode: 'no-cors',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(fullPayload)
   })
   .then(() => {
-    showScorePanel(correct, total, pct);
+    showScorePanel(correct, total, pct, true);
   })
   .catch(() => {
-    showScorePanel(correct, total, pct);
+    showScorePanel(correct, total, pct, false);
   });
 }
 
-function showScorePanel(correct, total, pct) {
+function showScorePanel(correct, total, pct, emailSent) {
   let msg = '';
   if (pct >= 90) msg = '非常出色！您对四圣谛、缘起与三法印的理解已相当深入，继续保持正念修行。';
   else if (pct >= 75) msg = '理解不错！有几个概念还可以再深入觉察，建议回顾解析，结合自身经验再反思。';
   else if (pct >= 60) msg = '有一定基础，但还有不少误解需要厘清。建议重新阅读解析，多从生活场景中观察。';
   else msg = '这些概念需要更多时间消化。不急，慢慢来——佛法不是靠 \"知道\" ，而是靠 \"觉察\" 。建议从缘起开始重新学习。';
+
+  const emailNote = emailSent
+    ? `<div class="score-email-note">📧 成绩单与完整解析已发送至您的邮箱，请查收。</div>`
+    : `<div class="score-email-note">⚠️ 成绩已记录，但邮件发送遇到问题，请联系主办方。</div>`;
 
   const panel = document.getElementById('scorePanel');
   panel.innerHTML = `
@@ -732,6 +762,7 @@ function showScorePanel(correct, total, pct) {
     <div class="score-big">${correct} / ${total}</div>
     <div class="score-label">${pct}%</div>
     <div class="score-msg">${msg}</div>
+    ${emailNote}
   `;
   panel.classList.add('show');
   document.getElementById('submitBtn').style.display = 'none';
