@@ -46,10 +46,22 @@ function doPost(e) {
       secScores['第四部分：高级集成与终极修复（题 41–50）'] || ''
     ];
 
-    var answers = data.answers || [];
+    // --- 修改部分：标注答对或答错 ---
+    var details = data.questionDetails || []; 
+    var optLetters = ['A', 'B', 'C', 'D'];
+
     for (var i = 0; i < 50; i++) {
-      row.push(answers[i] || '');
+      if (details[i]) {
+        var d = details[i];
+        var userLetter = optLetters[d.userAnswer] || '-';
+        // 如果答对显示 [A] ✅，答错显示 [B] ❌
+        var mark = d.isCorrect ? ' ✅' : ' ❌';
+        row.push(userLetter + mark);
+      } else {
+        row.push(''); // 防止数据缺失
+      }
     }
+    // ----------------------------
 
     sheet.appendRow(row);
 
