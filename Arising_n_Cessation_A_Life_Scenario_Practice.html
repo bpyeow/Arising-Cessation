@@ -874,16 +874,25 @@ function submitQuiz() {
 
   emailHtml = `<h3>总得分: ${correct} / ${total} (${pct}%)</h3>` + emailHtml;
 
+  // 构建每题合并格式：如 "A ✓" 或 "B ✗"
+  const optionLabels = ['A', 'B', 'C', 'D'];
+  const questionResults = questions.map((q, i) => {
+    const label = answered[i] !== null ? optionLabels[answered[i]] : '–';
+    const mark = answered[i] === q.answer ? '✓' : '✗';
+    return label + ' ' + mark;
+  });
+
   // 准备发送到后端的 Payload
   const payload = {
     email: emailInput,
     totalScore: `${correct}/${total}`,
     sectionScores: formattedSecScores,
+    questionResults: questionResults,
     emailHtmlBody: emailHtml
   };
 
   // 请将下方的 URL 替换为您部署 Google Apps Script 后获得的 Web App URL
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgQOrBKJzHljLZQ4YP6fm8boGgitkqLNUk0AFkfoThpjvENn6PlJheP0svRNEUdKzGew/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzqdOzWRczIuSCNc7D4aCMKE0ey3vyG1E1AeSOdTgH4GQ-DWpqRdevazDe1GlIR1iROkA/exec";
 
   // 发送数据到 Google Apps Script
   fetch(WEB_APP_URL, {
